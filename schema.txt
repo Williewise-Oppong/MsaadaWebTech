@@ -1,0 +1,61 @@
+CREATE TABLE Users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    role INT
+);
+
+CREATE TABLE NGO_Profiles (
+    user_id INT PRIMARY KEY NOT NULL,
+    org_name VARCHAR(100) NOT NULL,
+    mission TEXT,
+    location VARCHAR(100),
+    focus_area VARCHAR(100),
+    company_size VARCHAR(50),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+CREATE TABLE Volunteer_Profiles (
+    user_id INT PRIMARY KEY NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    bio TEXT,
+    availability VARCHAR(100),
+    location VARCHAR(100),
+    FOREIGN KEY (user_id) REFERENCES Volunteer_Profiles(user_id)
+);
+
+CREATE TABLE Volunteer_Skills (
+    user_id INT NOT NULL,
+    skill VARCHAR(100) NOT NULL,
+    PRIMARY KEY (user_id, skill),
+    FOREIGN KEY (user_id) REFERENCES Volunteer_Profiles(user_id)
+);
+
+CREATE TABLE Opportunities (
+    opportunity_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    ngo_id INT NOT NULL,
+    title VARCHAR(100) NOT NULL,
+    description TEXT,
+    location VARCHAR(100),
+    deadline DATE,
+    status VARCHAR(50),
+    FOREIGN KEY (ngo_id) REFERENCES NGO_Profiles(user_id)
+);
+
+CREATE TABLE Opportunity_Skills (
+    opportunity_id INT NOT NULL,
+    skill VARCHAR(100) NOT NULL,
+    PRIMARY KEY (opportunity_id, skill),
+    FOREIGN KEY (opportunity_id) REFERENCES Opportunities(opportunity_id)
+);
+
+CREATE TABLE Applications (
+    application_id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    opportunity_id INT NOT NULL,
+    volunteer_id INT NOT NULL,
+    message TEXT,
+    status ENUM('accepted', 'pending', 'rejected'),
+    FOREIGN KEY (opportunity_id) REFERENCES Opportunities(opportunity_id),
+    FOREIGN KEY (volunteer_id) REFERENCES Volunteer_Profiles(user_id)
+);
